@@ -2,9 +2,9 @@
   "name": "turtle-stealth-meta",
   "version": "4.1.0",
   "description": "Turtle Raids v4.1 - Recruitment Lock Edition",
-  "main": "index.js",
+  "main": "bot.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node bot.js"
   },
   "dependencies": {
     "discord.js": "^14.18.0",
