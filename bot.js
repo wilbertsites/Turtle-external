@@ -7,8 +7,8 @@ app.listen(process.env.PORT || 3000);
 
 const CLIENT_ID = '1500501859436068954';
 const TOKEN = process.env.TOKEN;
-const DC_LINK = "https://discord.gg/pkvG7BGKEZ";
-const BLAME_LINK = "discord.gg/mydckink";
+const DC_LINK = "https://discord.gg/fS2rcatnZk";
+const BLAME_LINK = "https://discord.gg/fS2rcatnZk";
 const BIS_CHAR = "﷽";
 const LAG_CHAR = "\u2028";
 
