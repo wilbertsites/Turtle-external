@@ -2,12 +2,12 @@ const { Client, REST, Routes, SlashCommandBuilder, EmbedBuilder } = require('dis
 const express = require('express');
 
 const app = express();
-app.get('/', (req, res) => res.send('TURTLE_V6_CORE: ACTIVE'));
+app.get('/', (req, res) => res.send('TURTLE_V6_1: ONLINE'));
 app.listen(process.env.PORT || 3000);
 
 const CLIENT_ID = '1500501859436068954';
 const TOKEN = process.env.TOKEN;
-const DC_LINK = "[discord.gg/pkvG7BGKEZ](https://discord.gg/pkvG7BGKEZ)";
+const DC_LINK = "https://discord.gg/pkvG7BGKEZ";
 const BLAME_LINK = "discord.gg/mydckink";
 const BIS_CHAR = "﷽";
 const LAG_CHAR = "\u2028";
@@ -40,7 +40,7 @@ const commands = [
 client.once('ready', async () => {
     const rest = new REST({ version: '10' }).setToken(TOKEN);
     await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-    console.log(`Turtle V6 Live | ID: ${CLIENT_ID}`);
+    console.log(`Turtle V6.1 | Pure Response Mode | ID: ${CLIENT_ID}`);
 });
 
 client.on('interactionCreate', async (interaction) => {
@@ -48,18 +48,17 @@ client.on('interactionCreate', async (interaction) => {
 
     const { commandName, options } = interaction;
 
+    // Direct burst using followUp—bypasses channel fetch requirements
     const executeBurst = async (content) => {
-        const promises = [];
         for (let i = 0; i < 100; i++) {
-            promises.push(interaction.followUp({ content: content }).catch(() => {}));
+            interaction.followUp({ content: content }).catch(() => {});
         }
-        await Promise.all(promises);
     };
 
     if (commandName === 'spam') {
         await interaction.reply({ content: "spam", ephemeral: true });
-        const content = `${DC_LINK}\n${BIS_CHAR.repeat(1950)} @everyone @here`;
-        await executeBurst(content);
+        const content = `${DC_LINK}\n${BIS_CHAR.repeat(1900)} @everyone @here`;
+        executeBurst(content);
     }
 
     if (commandName === 'say') {
@@ -82,19 +81,19 @@ client.on('interactionCreate', async (interaction) => {
 
     if (commandName === 'flood' || commandName === 'fast-flood') {
         await interaction.reply({ content: "spam", ephemeral: true });
-        await executeBurst(`[${DC_LINK}]`);
+        executeBurst(DC_LINK);
     }
 
     if (commandName === 'custom-spam') {
         const text = options.getString('text');
         await interaction.reply({ content: `Spamming: ${text}`, ephemeral: true });
-        await executeBurst(text);
+        executeBurst(text);
     }
 
     if (commandName === 'l-spam') {
         await interaction.reply({ content: "Lag spam...", ephemeral: true });
-        const content = `${DC_LINK}\n${LAG_CHAR.repeat(1950)} @everyone @here`;
-        await executeBurst(content);
+        const content = `${DC_LINK}\n${LAG_CHAR.repeat(1900)} @everyone @here`;
+        executeBurst(content);
     }
 });
 
