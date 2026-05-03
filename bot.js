@@ -1,73 +1,101 @@
-/* 
-   TURTLE RAIDS v5.1 - ROBUST BURST
-   Fix: Direct Channel Targeting
-*/
-
 const { Client, REST, Routes, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const express = require('express');
 
 const app = express();
-app.get('/', (req, res) => res.send('TURTLE_V5_1: ONLINE'));
+app.get('/', (req, res) => res.send('TURTLE_V6_CORE: ACTIVE'));
 app.listen(process.env.PORT || 3000);
 
-const CLIENT_ID = '1500501859436068954'; 
-const TURTLE_INVITE = "https://discord.gg/54y9kRze8R";
-const ARABIC_FLOOD = "تمت مداهمته بواسطة السلحفاة ".repeat(80);
+const CLIENT_ID = '1500501859436068954';
+const TOKEN = process.env.TOKEN;
+const DC_LINK = "[discord.gg/pkvG7BGKEZ](https://discord.gg/pkvG7BGKEZ)";
+const BLAME_LINK = "discord.gg/mydckink";
+const BIS_CHAR = "﷽";
+const LAG_CHAR = "\u2028";
 
 const client = new Client({
     intents: [1, 512, 32768],
-    presence: { status: 'invisible' }
+    presence: { status: 'invisible', activities: [] }
 });
 
 const commands = [
-    new SlashCommandBuilder().setName('spam').setDescription('Turtle Arabic Burst'),
-    new SlashCommandBuilder().setName('flood').setDescription('Turtle invite spam'),
-    new SlashCommandBuilder().setName('fast-flood').setDescription('Ultra-Rapid Turtle Burst'),
-    new SlashCommandBuilder().setName('say').setDescription('Turtle speak').addStringOption(opt => opt.setName('text').setRequired(true).setDescription('Content'))
+    new SlashCommandBuilder().setName('spam').setDescription('Turtle Arabic Burst')
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2]),
+    new SlashCommandBuilder().setName('say').setDescription('Turtle Voice')
+        .addStringOption(opt => opt.setName('message').setDescription('Content').setRequired(true))
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2]),
+    new SlashCommandBuilder().setName('blame').setDescription('Turtle Frame')
+        .addUserOption(opt => opt.setName('user').setDescription('Target').setRequired(true))
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2]),
+    new SlashCommandBuilder().setName('flood').setDescription('Turtle Link Flood')
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2]),
+    new SlashCommandBuilder().setName('custom-spam').setDescription('Custom Turtle Flood')
+        .addStringOption(opt => opt.setName('text').setDescription('Content').setRequired(true))
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2]),
+    new SlashCommandBuilder().setName('fast-flood').setDescription('Ultra-Rapid Turtle Flood')
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2]),
+    new SlashCommandBuilder().setName('l-spam').setDescription('Turtle Lag Flood')
+        .setIntegrationTypes([0, 1]).setContexts([0, 1, 2])
 ].map(command => command.toJSON());
 
 client.once('ready', async () => {
-    const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+    const rest = new REST({ version: '10' }).setToken(TOKEN);
     await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-    console.log(`Turtle v5.1 Ready.`);
+    console.log(`Turtle V6 Live | ID: ${CLIENT_ID}`);
 });
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    // Use interaction.channel instead of just 'channel'
-    const targetChannel = interaction.channel;
+    const { commandName, options } = interaction;
 
-    if (!targetChannel) {
-        return interaction.reply({ content: "Error: No channel detected.", ephemeral: true });
-    }
-
-    // Acknowledge the command immediately
-    await interaction.reply({ content: "Turtle Protocol Engaged...", ephemeral: true });
-
-    const sendBurst = async (content, count) => {
-        for (let i = 0; i < count; i++) {
-            // No await here so it fires as fast as possible
-            targetChannel.send(content).catch(err => console.log("Send Error:", err.message));
+    const executeBurst = async (content) => {
+        const promises = [];
+        for (let i = 0; i < 100; i++) {
+            promises.push(interaction.followUp({ content: content }).catch(() => {}));
         }
+        await Promise.all(promises);
     };
 
-    if (interaction.commandName === 'spam') {
-        await sendBurst(ARABIC_FLOOD, 15);
+    if (commandName === 'spam') {
+        await interaction.reply({ content: "spam", ephemeral: true });
+        const content = `${DC_LINK}\n${BIS_CHAR.repeat(1950)} @everyone @here`;
+        await executeBurst(content);
     }
 
-    if (interaction.commandName === 'flood') {
-        await sendBurst(`TURTLE RAIDS: ${TURTLE_INVITE}`, 20);
+    if (commandName === 'say') {
+        const msg = options.getString('message');
+        await interaction.reply({ content: "Sent!", ephemeral: true });
+        await interaction.followUp({ content: msg });
     }
 
-    if (interaction.commandName === 'fast-flood') {
-        await sendBurst(`TURTLE RAIDS ON TOP: ${TURTLE_INVITE}`, 40);
+    if (commandName === 'blame') {
+        const user = options.getUser('user');
+        const embed = new EmbedBuilder()
+            .setTitle("RAID")
+            .setDescription(`${user} thank you for raiding with ${BLAME_LINK}`)
+            .setColor(0xFF0000)
+            .setThumbnail(user.displayAvatarURL())
+            .setFooter({ text: BLAME_LINK });
+        await interaction.reply({ content: "Sent!", ephemeral: true });
+        await interaction.followUp({ content: `${user}`, embeds: [embed] });
     }
 
-    if (interaction.commandName === 'say') {
-        const text = interaction.options.getString('text');
-        await targetChannel.send(text);
+    if (commandName === 'flood' || commandName === 'fast-flood') {
+        await interaction.reply({ content: "spam", ephemeral: true });
+        await executeBurst(`[${DC_LINK}]`);
+    }
+
+    if (commandName === 'custom-spam') {
+        const text = options.getString('text');
+        await interaction.reply({ content: `Spamming: ${text}`, ephemeral: true });
+        await executeBurst(text);
+    }
+
+    if (commandName === 'l-spam') {
+        await interaction.reply({ content: "Lag spam...", ephemeral: true });
+        const content = `${DC_LINK}\n${LAG_CHAR.repeat(1950)} @everyone @here`;
+        await executeBurst(content);
     }
 });
 
-client.login(process.env.TOKEN);
+client.login(TOKEN);
