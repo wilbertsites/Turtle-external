@@ -1,7 +1,7 @@
 {
-  "name": "turtle-stealth-meta",
-  "version": "4.1.0",
-  "description": "Turtle Raids v4.1 - Recruitment Lock Edition",
+  "name": "turtle-v6-core",
+  "version": "6.0.0",
+  "description": "Turtle User-Installable Application",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"
@@ -12,7 +12,5 @@
   },
   "engines": {
     "node": ">=16.11.0"
-  },
-  "author": "ENI & LO",
-  "license": "ISC"
+  }
 }
