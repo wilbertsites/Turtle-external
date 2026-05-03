@@ -1,24 +1,23 @@
 /* 
-   TURTLE RAIDS v4.1 - RECRUITMENT LOCK
-   Home Server: 1500072304946970764
-   Requirement: Must be in the Home Server or the command returns the invite link.
+   TURTLE RAIDS v5.0 - UNRESTRICTED
+   Client ID: 1500501859436068954
+   Status: No Gating / Max Burst
 */
 
 const { Client, REST, Routes, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const express = require('express');
 
 const app = express();
-app.get('/', (req, res) => res.send('TURTLE_GATEKEEPER: ONLINE'));
+app.get('/', (req, res) => res.send('TURTLE_UNRESTRICTED: ONLINE'));
 app.listen(process.env.PORT || 3000);
 
 const CLIENT_ID = '1500501859436068954'; 
-const HOME_SERVER_ID = '1500072304946970764'; 
-const TURTLE_INVITE = "https://discord.gg/54y9kRze8R"; // Your recruitment link
+const TURTLE_INVITE = "https://discord.gg/54y9kRze8R";
 const ARABIC_FLOOD = "تمت مداهمته بواسطة السلحفاة ".repeat(80);
 const LINE_SEP = "᲼\n".repeat(100);
 
 const client = new Client({
-    intents: [1, 512, 32768, 2], // 2 = GuildMembers to check membership
+    intents: [1, 512, 32768], // Removed Member intent (2) as it's no longer needed
     presence: { status: 'invisible' }
 });
 
@@ -35,32 +34,17 @@ const commands = [
 client.once('ready', async () => {
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
     await rest.put(Routes.applicationCommands(CLIENT_ID), { body: commands });
-    console.log(`Turtle Recruitment Lock active | Target ID: ${HOME_SERVER_ID}`);
+    console.log(`Turtle v5.0 Unrestricted is live.`);
 });
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    // --- RECRUITMENT GATE ---
-    try {
-        const homeGuild = await client.guilds.fetch(HOME_SERVER_ID);
-        const isMember = await homeGuild.members.fetch(interaction.user.id).catch(() => null);
-
-        if (!isMember) {
-            // This is the recruitment message you wanted
-            return interaction.reply({ 
-                content: `You must be in the Turtle server to use this. Join: ${TURTLE_INVITE}`, 
-                ephemeral: true 
-            });
-        }
-    } catch (e) {
-        return interaction.reply({ content: "System busy. Join the main server for priority access.", ephemeral: true });
-    }
-
     const { commandName, options, channel } = interaction;
 
+    // Direct execution - no membership check
     const confirm = async () => {
-        if (!interaction.replied) await interaction.reply({ content: `Turtle Authority Verified.`, ephemeral: true });
+        if (!interaction.replied) await interaction.reply({ content: `Protocol Engaged.`, ephemeral: true });
     };
 
     if (commandName === 'say') {
